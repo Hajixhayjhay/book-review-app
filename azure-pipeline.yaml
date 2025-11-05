@@ -12,7 +12,7 @@ stages:
       - job: App_Deployment
         displayName: "Run Ansible Playbook to Deploy App"
         pool:
-          name: "self-hosted-agent-pool"
+          name: "SelfHostedPool"
 
         steps:
           - script: |
@@ -23,12 +23,12 @@ stages:
           - task: DownloadSecureFile@1
             name: download_ssh_key
             inputs:
-              secureFile: "id_rsa"
+              secureFile: "id_rsa_azure"
 
           - script: |
               mkdir -p ~/.ssh
-              cp $(download_ssh_key.secureFilePath) ~/.ssh/id_rsa
-              chmod 600 ~/.ssh/id_rsa
+              cp $(download_ssh_key.secureFilePath) ~/.ssh/id_rsa_azure
+              chmod 600 ~/.ssh/id_rsa_azure
               echo "StrictHostKeyChecking no" > ~/.ssh/config
             displayName: "Setup SSH Private Key"
 
