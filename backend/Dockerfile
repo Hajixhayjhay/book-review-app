@@ -1,5 +1,5 @@
-# Use Node.js LTS as base image
-FROM node:18
+# Stage 1: Build stage
+FROM node:18-alpine AS builder
 
 # Set working directory
 WORKDIR /app
@@ -8,14 +8,21 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install
+RUN npm install --production
 
-# Copy the rest of the application files
+# Copy source files
 COPY . .
+
+# Stage 2: Final image
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Copy only necessary files from builder
+COPY --from=builder /app /app
 
 # Expose the port the backend runs on
 EXPOSE 3001
 
 # Start the backend server
 CMD ["node", "src/server.js"]
-
